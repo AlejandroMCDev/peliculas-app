@@ -15,6 +15,8 @@ date-fns · Motion · Vitest + Testing Library · pnpm. Node 22. Data lives in m
   Only `<name>.composition.ts` picks the infrastructure implementation.
 - Other code imports a feature only through `@/features/<name>`.
 - `src/shared` holds generic code and never imports a feature. `src/shared/ui` is shadcn code.
+- Tests: ALL tests live in `src/test/`, mirroring the path of the file under test
+  (`src/features/x/domain/a.ts` → `src/test/features/x/domain/a.test.ts`). Never next to the code.
 - Details: `.claude/rules/architecture.md`. Reference feature: `src/features/habits`.
 
 ## Working agreement

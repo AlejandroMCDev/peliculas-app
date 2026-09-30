@@ -1,10 +1,12 @@
 ---
-paths: ['src/**/*.test.ts', 'src/**/*.test.tsx']
+paths: [src/test/**]
 ---
 
 # Testing rules
 
-- Test files sit next to the file they test: `create-habit.ts` → `create-habit.test.ts`.
+- ALL tests live in `src/test/`, never next to the code. They mirror the path of the file under test:
+  `src/features/habits/application/create-habit.ts` → `src/test/features/habits/application/create-habit.test.ts`.
+- Import the code under test with the `@/` alias, never with `../` relative paths.
 - Use cases: test with the in-memory repository — no mocks of our own code, no network.
 - Domain rules: plain input → output tests. Pass `today` explicitly; never depend on the real clock.
 - Screens: render the pure screen with Testing Library; query by role and accessible name

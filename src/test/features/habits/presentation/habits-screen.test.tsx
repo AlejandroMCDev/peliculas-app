@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
-import type { Habit } from '../domain/habit';
-import { HabitsScreen } from './habits-screen';
+import type { Habit } from '@/features/habits/domain/habit';
+import { HabitsScreen } from '@/features/habits/presentation/habits-screen';
 
 const today = new Date(2026, 8, 30);
 

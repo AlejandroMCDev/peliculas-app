@@ -17,7 +17,6 @@ const layer = (files, patterns, ignores = []) => ({
   ignores,
   rules: { 'no-restricted-imports': ['error', { patterns: [crossFeature, ...patterns] }] },
 });
-const tests = ['**/*.test.ts', '**/*.test.tsx']; // tests may wire the in-memory repository
 
 export default defineConfig([
   globalIgnores(['dist', 'coverage', 'src/shared/ui/**']),
@@ -59,7 +58,6 @@ export default defineConfig([
         message: 'application depends only on domain.',
       },
     ],
-    tests,
   ),
   layer(
     ['src/features/*/infrastructure/**'],
@@ -83,5 +81,7 @@ export default defineConfig([
     ['src/shared/**'],
     [{ group: ['@/features', '@/features/*'], message: 'shared never depends on a feature.' }],
   ),
+  // Tests live in src/test/ and may import internals of any layer, so the layer rules are off there.
+  { files: ['src/test/**'], rules: { 'no-restricted-imports': 'off' } },
   prettier,
 ]);

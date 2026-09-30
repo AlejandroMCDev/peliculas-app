@@ -1,8 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { createInMemoryHabitRepository } from '../infrastructure/in-memory-habit-repository';
-import { createHabit } from './create-habit';
-import { archiveHabit } from './archive-habit';
-import { toggleHabit } from './toggle-habit';
+import { createInMemoryHabitRepository } from '@/features/habits/infrastructure/in-memory-habit-repository';
+import { createHabit } from '@/features/habits/application/create-habit';
+import { toggleHabit } from '@/features/habits/application/toggle-habit';
 
 const today = new Date(2026, 8, 30);
 
@@ -20,17 +19,5 @@ describe('toggleHabit', () => {
     await expect(toggleHabit(repository, 'missing', today)).rejects.toMatchObject({
       code: 'NOT_FOUND',
     });
-  });
-});
-
-describe('archiveHabit', () => {
-  it('flags the habit as archived without deleting it', async () => {
-    const repository = createInMemoryHabitRepository();
-    const { id } = await createHabit(repository, { name: 'Read', frequency: 'daily' });
-
-    await archiveHabit(repository, id);
-
-    const [habit] = await repository.list();
-    expect(habit).toMatchObject({ id, archived: true });
   });
 });

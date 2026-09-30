@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { currentStreak, filterHabits, isDoneInPeriod, toggleCompletion, type Habit } from './habit';
+import {
+  currentStreak,
+  filterHabits,
+  isDoneInPeriod,
+  toggleCompletion,
+  type Habit,
+} from '@/features/habits/domain/habit';
 
 // Wednesday 2026-09-30 (weeks start on Monday)
 const today = new Date(2026, 8, 30);

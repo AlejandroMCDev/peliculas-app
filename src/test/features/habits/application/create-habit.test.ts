@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { createInMemoryHabitRepository } from '../infrastructure/in-memory-habit-repository';
-import { createHabit } from './create-habit';
+import { createInMemoryHabitRepository } from '@/features/habits/infrastructure/in-memory-habit-repository';
+import { createHabit } from '@/features/habits/application/create-habit';
 
 describe('createHabit', () => {
   it('adds an active habit with no completions', async () => {
