@@ -1,8 +1,14 @@
 import { createContext, useContext } from 'react';
 
-export type Theme = 'light' | 'dark';
+export type Theme = 'light' | 'dark' | 'system';
 
-export type ThemeContextValue = { theme: Theme; toggleTheme: () => void };
+export type ThemeContextValue = {
+  /** What the user chose. */
+  theme: Theme;
+  /** What is actually painted ('system' resolved through the OS preference). */
+  resolvedTheme: 'light' | 'dark';
+  setTheme: (theme: Theme) => void;
+};
 
 export const ThemeContext = createContext<ThemeContextValue | null>(null);
 

@@ -13,4 +13,4 @@ description: Create a new feature following the project's Clean Architecture, by
 4. Delegate to the `test-writer` agent with the plan path and the list of files the implementer changed.
 5. Run `/check`. Report: files created, tests added, anything left open in the plan.
 
-The reference shape is `src/features/habits`: every new feature mirrors it.
+The reference shape is `src/features/movies`: every new feature mirrors it.

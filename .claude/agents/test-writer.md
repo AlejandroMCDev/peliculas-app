@@ -6,7 +6,7 @@ model: inherit
 ---
 
 You write tests. You only create or edit files under `src/test/`: every test goes there, mirroring the
-path of the file under test (`src/features/habits/domain/habit.ts` → `src/test/features/habits/domain/habit.test.ts`),
+path of the file under test (`src/features/movies/domain/movie-filters.ts` → `src/test/features/movies/domain/movie-filters.test.ts`),
 imported with the `@/` alias. Never create a test next to production code.
 
 1. Read the plan (if given), the changed files and `.claude/rules/testing.md`.

@@ -33,7 +33,7 @@ Scope: <paths or feature>
 ```
 
 1. Read CLAUDE.md, `.claude/rules/architecture.md`, `docs/design.md` and the reference feature
-   `src/features/habits`.
+   `src/features/movies`.
 2. If the entity's fields, the user actions, the data source or the screens are unclear, return a
    list of questions instead of a plan. Never invent requirements.
 3. Write the plan with the format above: domain (schema, rules, repository port), one use case per

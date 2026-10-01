@@ -5,9 +5,9 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: 'Inter Tight Variable', sans-serif;
+  --font-sans: 'Manrope Variable', system-ui, sans-serif;
   --font-heading: var(--font-sans);
-  --font-display: 'Fraunces Variable', Georgia, serif;
+  --font-display: 'Oswald Variable', 'Arial Narrow', sans-serif;
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
@@ -35,48 +35,49 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* "Cuaderno editorial": bone paper, near-black ink, forest-green accent. See docs/design.md */
+/* "Cine nocturno": a dark theatre with marquee-amber light. Light mode is a printed program:
+   ivory paper and graphite ink. See docs/design.md */
 :root {
-  --background: oklch(0.975 0.012 95);
-  --foreground: oklch(0.2 0.01 95);
-  --card: oklch(0.99 0.008 95);
-  --card-foreground: oklch(0.2 0.01 95);
-  --popover: oklch(0.99 0.008 95);
-  --popover-foreground: oklch(0.2 0.01 95);
-  --primary: oklch(0.36 0.07 155);
-  --primary-foreground: oklch(0.975 0.012 95);
-  --secondary: oklch(0.94 0.014 95);
-  --secondary-foreground: oklch(0.25 0.02 95);
-  --muted: oklch(0.94 0.014 95);
-  --muted-foreground: oklch(0.46 0.015 95);
-  --accent: oklch(0.92 0.03 150);
-  --accent-foreground: oklch(0.25 0.05 155);
-  --destructive: oklch(0.5 0.2 27);
-  --border: oklch(0.87 0.015 95);
-  --input: oklch(0.87 0.015 95);
-  --ring: oklch(0.5 0.08 155);
+  --background: oklch(0.975 0.008 85);
+  --foreground: oklch(0.2 0.01 60);
+  --card: oklch(0.995 0.004 85);
+  --card-foreground: oklch(0.2 0.01 60);
+  --popover: oklch(0.995 0.004 85);
+  --popover-foreground: oklch(0.2 0.01 60);
+  --primary: oklch(0.55 0.15 55);
+  --primary-foreground: oklch(0.99 0.005 85);
+  --secondary: oklch(0.93 0.012 85);
+  --secondary-foreground: oklch(0.24 0.01 60);
+  --muted: oklch(0.93 0.012 85);
+  --muted-foreground: oklch(0.47 0.012 60);
+  --accent: oklch(0.93 0.04 80);
+  --accent-foreground: oklch(0.3 0.06 55);
+  --destructive: oklch(0.52 0.2 27);
+  --border: oklch(0.87 0.012 85);
+  --input: oklch(0.85 0.012 85);
+  --ring: oklch(0.62 0.14 60);
   --radius: 0.625rem;
 }
 
 .dark {
-  --background: oklch(0.18 0.01 155);
-  --foreground: oklch(0.94 0.01 95);
-  --card: oklch(0.22 0.012 155);
-  --card-foreground: oklch(0.94 0.01 95);
-  --popover: oklch(0.22 0.012 155);
-  --popover-foreground: oklch(0.94 0.01 95);
-  --primary: oklch(0.78 0.11 155);
-  --primary-foreground: oklch(0.2 0.03 155);
-  --secondary: oklch(0.27 0.012 155);
-  --secondary-foreground: oklch(0.94 0.01 95);
-  --muted: oklch(0.27 0.012 155);
-  --muted-foreground: oklch(0.72 0.015 95);
-  --accent: oklch(0.3 0.04 155);
-  --accent-foreground: oklch(0.94 0.01 95);
+  --background: oklch(0.15 0.008 60);
+  --foreground: oklch(0.95 0.01 85);
+  --card: oklch(0.19 0.009 60);
+  --card-foreground: oklch(0.95 0.01 85);
+  --popover: oklch(0.2 0.009 60);
+  --popover-foreground: oklch(0.95 0.01 85);
+  --primary: oklch(0.8 0.15 75);
+  --primary-foreground: oklch(0.18 0.02 60);
+  --secondary: oklch(0.25 0.01 60);
+  --secondary-foreground: oklch(0.95 0.01 85);
+  --muted: oklch(0.24 0.01 60);
+  --muted-foreground: oklch(0.72 0.012 80);
+  --accent: oklch(0.28 0.03 70);
+  --accent-foreground: oklch(0.95 0.01 85);
   --destructive: oklch(0.7 0.19 22);
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 16%);
-  --ring: oklch(0.65 0.1 155);
+  --border: oklch(1 0 0 / 11%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.8 0.15 75);
 }
 
 @layer base {
@@ -84,9 +85,56 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
   }
   html {
     @apply font-sans;
+  }
+}
+
+/* ---- View transitions (React <ViewTransition>) ---------------------------------------------- */
+
+:root {
+  --duration-morph: 380ms;
+  --ease-morph: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* Card poster → detail poster. The group moves/resizes; old and new images cross-fade inside it. */
+::view-transition-group(.morph) {
+  animation-duration: var(--duration-morph);
+  animation-timing-function: var(--ease-morph);
+}
+
+::view-transition-image-pair(.morph) {
+  animation-name: via-blur;
+  animation-duration: var(--duration-morph);
+}
+
+::view-transition-old(.morph),
+::view-transition-new(.morph) {
+  animation-duration: var(--duration-morph);
+  /* Posters keep their aspect ratio: scale the snapshot instead of stretching it. */
+  height: 100%;
+  object-fit: cover;
+}
+
+@keyframes via-blur {
+  30% {
+    filter: blur(3px);
+  }
+}
+
+/* The rest of the page swaps with a quick cross-fade instead of the browser's default 250 ms. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 180ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
   }
 }

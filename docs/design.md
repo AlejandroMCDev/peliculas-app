@@ -1,27 +1,38 @@
-# Design — caso-01
+# Design — caso-01 ("Cartelera")
 
-**Direction:** "Cuaderno editorial" — a bullet-journal feel: bone paper, near-black ink, one forest-green accent.
+**Direction:** "Cine nocturno" — a dark theatre lit by a marquee: near-black warm surfaces, one amber
+accent, condensed poster-style headings. Light mode is the printed program: ivory paper, graphite ink.
 
 ## Palette (tokens in `src/index.css`, oklch)
 
-- `background` bone paper; `card` slightly lighter paper; `foreground` near-black ink.
-- `primary` forest green: the one main action per view and the completed-day dots.
-- `accent` pale green: hover/selected surfaces. `muted` for secondary text and empty dots.
-- `destructive` only for errors. Dark mode keeps the same hue (155) on a deep green-black.
+- `background` warm near-black (dark) / ivory (light); `card` one step lighter.
+- `primary` amber: the one main action per view (e.g. "Ver tráiler"), selected genres, the rating number.
+- `secondary` / `muted`: badges, skeletons and secondary text. `accent`: hover/selected surfaces.
+- `destructive` only for errors. Both themes share the hue family (60–85) so they feel like one brand.
 
 ## Typography
 
-- `font-display` (Fraunces): page titles and big numbers only.
-- `font-sans` (Inter Tight): all UI text. Use `tabular-nums` for streaks and counters.
+- `font-display` (Oswald): page and movie titles, section titles and big numbers, in uppercase.
+- `font-sans` (Manrope): all UI text. Use `tabular-nums` for years, ratings and money.
+
+## Imagery
+
+- Posters are always 2:3 (`aspect-2/3`), backdrops are decoration only (`alt=""`, blurred, low opacity).
+- Images come from TMDB in three widths; components pass `sizes` so the browser picks the smallest.
 
 ## Shape and density
 
-- Radius `0.625rem` (medium). Spacious density: `p-4` rows, `space-y-8` between page sections.
+- Radius `0.625rem`. Grid of 2 → 5 columns. `gap-4` in grids, `mt-12` between detail sections.
+
+## Motion
+
+- Card → detail: the poster morphs (shared `<ViewTransition name="poster-<id>">`, 380 ms).
+- Everything else: ≤ 250 ms. All of it is disabled with `prefers-reduced-motion`.
 
 ## Don't
 
-- No hex or Tailwind palette colors (`bg-green-600`): tokens only.
+- No hex or Tailwind palette colors (`bg-amber-500`): tokens only.
 - No second accent color; hierarchy comes from size, weight and spacing.
-- No gradients, shadows-as-decoration or emoji as icons (use lucide).
-- No display font below `text-2xl`.
-- No animation longer than 250 ms; respect `prefers-reduced-motion`.
+- No decorative gradients. The one exception is the detail backdrop fading into the background.
+- No emoji as icons (use lucide). The ★ in ratings is text, not an icon.
+- No display font below `text-2xl` (except the header logo at `text-2xl`).

@@ -11,7 +11,7 @@ paths: ['src/**/*.tsx']
 - Props are a `type` named `<Component>Props`. No `any`; no `React.FC`.
 - Model screen states explicitly: loading, empty, error and success are all designed.
 - Effects only synchronize with external systems. Derived values are computed during render;
-  data loading uses React Router loaders, never `useEffect` + `fetch`.
+  server data is loaded with TanStack Query hooks (`presentation/<entity>-queries.ts`), never `useEffect` + `fetch`.
 - Compose instead of configuring: prefer `children` and small components over many boolean props.
 - Use shadcn components from `@/shared/ui`; to change one, edit its file there (it is our code).
 - Classes are merged with `cn()`. No inline `style` except for truly dynamic values.
