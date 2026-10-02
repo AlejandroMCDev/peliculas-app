@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import { ErrorState } from '@/shared/components/error-state';
-import { useInView } from '@/shared/hooks/use-in-view';
 import type { FeaturedMovie } from '../domain/movie';
 import { HeroCarousel, HeroCarouselSkeleton } from './components/hero-carousel';
 import { MovieShelf } from './components/movie-shelf';
@@ -45,14 +43,8 @@ export function HomePage() {
       )}
 
       <div className="mx-auto max-w-7xl space-y-12 px-4 py-10 sm:px-6">
-        {HOME_SHELVES.map((shelf, index) => (
-          <ShelfContainer
-            key={shelf.id}
-            shelf={shelf}
-            // The first two sections are usually on screen at once: no need to wait for scrolling.
-            eager={index < 2}
-            onPrefetch={prefetchMovie}
-          />
+        {HOME_SHELVES.map((shelf) => (
+          <ShelfContainer key={shelf.id} shelf={shelf} onPrefetch={prefetchMovie} />
         ))}
       </div>
     </>
@@ -61,22 +53,18 @@ export function HomePage() {
 
 type ShelfContainerProps = {
   shelf: HomeShelf;
-  eager: boolean;
   onPrefetch: (id: number) => void;
 };
 
-/** Loads a section only when it gets near the viewport: the home does not fire 8 requests at once. */
-function ShelfContainer({ shelf, eager, onPrefetch }: ShelfContainerProps) {
-  const [sectionRef, inView] = useInView<HTMLElement>('600px');
-  const [wasSeen, setWasSeen] = useState(eager);
-  // Once near the viewport, stay loaded even after scrolling past it.
-  if (inView && !wasSeen) setWasSeen(true);
-
-  const query = useMovieShelf(shelf.source, wasSeen);
+/**
+ * Every section loads right away: each is one small JSON request and posters are lazy-loaded by the
+ * browser. (Loading on scroll left sections as skeletons after a reload restored the scroll below them.)
+ */
+function ShelfContainer({ shelf, onPrefetch }: ShelfContainerProps) {
+  const query = useMovieShelf(shelf.source);
 
   return (
     <MovieShelf
-      ref={sectionRef}
       id={shelf.id}
       title={shelf.title}
       seeAllHref={shelf.seeAll && browsePath(shelf.seeAll)}

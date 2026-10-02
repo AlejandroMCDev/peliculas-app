@@ -1,5 +1,4 @@
 import { ArrowRight, RotateCw } from 'lucide-react';
-import type { Ref } from 'react';
 import { Link } from 'react-router';
 import { describeError } from '@/shared/lib/error-message';
 import { Button } from '@/shared/ui/button';
@@ -17,8 +16,6 @@ type MovieShelfProps = {
   emptyText: string;
   onRetry: () => void;
   onPrefetch: (id: number) => void;
-  /** Lets the container know when the section gets near the viewport (lazy loading). */
-  ref?: Ref<HTMLElement>;
 };
 
 /** A home section: title, optional "Ver todas" link and a carousel of movies. */
@@ -32,12 +29,11 @@ export function MovieShelf({
   emptyText,
   onRetry,
   onPrefetch,
-  ref,
 }: MovieShelfProps) {
   const headingId = `shelf-${id}`;
 
   return (
-    <section ref={ref} aria-labelledby={headingId} className="space-y-4">
+    <section aria-labelledby={headingId} className="space-y-4">
       <div className="flex items-end justify-between gap-4">
         <h2
           id={headingId}

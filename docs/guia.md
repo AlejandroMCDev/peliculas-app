@@ -204,8 +204,14 @@ con cada pedido nuevo. Con composición, el componente queda pequeño y quien lo
 
 `useInView` (¿este elemento está cerca de la pantalla?), `useDebouncedValue` (espera a que dejes de
 escribir antes de buscar) y `usePrefersReducedMotion`. No saben nada de películas, por eso viven en
-`shared`. Se usan, por ejemplo, para que las secciones del inicio solo pidan datos cuando te acercas
-haciendo scroll.
+`shared`. Por ejemplo, `useInView` hace el scroll infinito de `/peliculas`: cuando el final de la
+lista se acerca a la pantalla, pide la página siguiente.
+
+> **Una lección real:** al principio las secciones del inicio también cargaban con `useInView`, solo al
+> acercarte. Pero al recargar la página estando abajo, el navegador te devuelve a esa posición de golpe
+> y las secciones que "saltaste" se quedaban como skeleton. Como cada sección es una sola petición
+> pequeña (y los pósters ya se cargan perezosamente con `loading="lazy"`), lo más simple y robusto fue
+> cargarlas todas de una vez. Optimizar antes de medir trajo un bug y no un beneficio visible.
 
 ### 5.5 Un "store" mínimo con `useSyncExternalStore`
 

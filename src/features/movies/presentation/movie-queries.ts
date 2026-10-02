@@ -120,12 +120,11 @@ export function useFeaturedMovies(region: Region) {
 }
 
 /** One home section. `enabled` lets a section wait until it scrolls near the viewport. */
-export function useMovieShelf(source: ShelfSource, enabled: boolean) {
+export function useMovieShelf(source: ShelfSource) {
   return useQuery({
     queryKey: movieKeys.shelf(source),
     queryFn: () => listMovieShelf(movieRepository, source),
     staleTime: 60 * MINUTE,
-    enabled,
   });
 }
 
