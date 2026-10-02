@@ -65,7 +65,7 @@ export function HeroCarousel({ movies, eyebrow, onPrefetch, renderActions }: Her
   return (
     <section
       aria-label={eyebrow}
-      className="relative isolate"
+      className="relative isolate overflow-hidden"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onFocus={() => setFocused(true)}
@@ -73,111 +73,129 @@ export function HeroCarousel({ movies, eyebrow, onPrefetch, renderActions }: Her
         if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false);
       }}
     >
-      <Carousel setApi={setApi} opts={{ loop: true, duration: reducedMotion ? 0 : 30 }}>
-        <CarouselContent className="ml-0">
-          {movies.map((movie, index) => (
-            <CarouselItem
-              key={movie.id}
-              className="pl-0"
-              aria-label={`${index + 1} de ${movies.length}`}
-            >
-              <img
-                src={movie.backdrop.large}
-                srcSet={srcSet(movie)}
-                sizes="100vw"
-                alt=""
-                loading={index === 0 ? 'eager' : 'lazy'}
-                fetchPriority={index === 0 ? 'high' : 'auto'}
-                decoding="async"
-                className="aspect-video w-full bg-muted object-cover sm:aspect-auto sm:h-[30rem] lg:h-[36rem]"
-              />
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-      </Carousel>
+      {/* Wide screens: the active image, blurred, fills the band around the uncropped one. */}
+      <div aria-hidden className="absolute inset-0 -z-10 hidden lg:block">
+        <img
+          src={active.backdrop.small}
+          alt=""
+          className="size-full scale-110 object-cover opacity-40 blur-3xl"
+        />
+        <div className="absolute inset-0 bg-linear-to-b from-background/30 to-background" />
+      </div>
 
-      {/* Fades the image into the page so the text keeps its contrast. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 aspect-video bg-linear-to-t from-background via-background/40 to-transparent sm:aspect-auto sm:h-[30rem] sm:via-background/60 lg:h-[36rem] lg:bg-linear-to-r lg:from-background/95 lg:via-background/50"
-      />
-
-      <div className="relative mx-auto -mt-16 max-w-7xl px-4 sm:absolute sm:inset-x-0 sm:bottom-0 sm:mt-0 sm:px-6 sm:pb-10">
-        <div
-          key={active.id}
-          className="max-w-xl space-y-3 motion-safe:animate-in motion-safe:duration-300 motion-safe:fade-in motion-safe:slide-in-from-bottom-2"
-          aria-live="polite"
+      <div className="mx-auto lg:grid lg:max-w-screen-2xl lg:grid-cols-[minmax(20rem,1fr)_minmax(0,2fr)] lg:items-center lg:gap-12 lg:px-6 lg:py-10">
+        <Carousel
+          setApi={setApi}
+          opts={{ loop: true, duration: reducedMotion ? 0 : 30 }}
+          className="lg:overflow-hidden lg:rounded-xl lg:shadow-2xl"
         >
-          <p className="text-sm font-semibold tracking-widest text-primary uppercase">{eyebrow}</p>
-          <h2 className="font-display text-4xl leading-none font-semibold tracking-tight text-balance uppercase sm:text-5xl lg:text-6xl">
-            {active.title}
-          </h2>
-          <p className="text-sm text-muted-foreground tabular-nums">
-            {[active.year, active.voteCount > 0 ? `★ ${formatRating(active.rating)}` : null]
-              .filter(Boolean)
-              .join(' · ')}
-          </p>
-          {active.overview && (
-            <p className="line-clamp-2 max-w-prose text-pretty sm:line-clamp-3">
-              {active.overview}
-            </p>
-          )}
-          <div className="flex flex-wrap gap-2 pt-1">
-            <Button size="lg" asChild>
-              <Link
-                to={moviePath(active.id)}
-                onMouseEnter={() => onPrefetch(active.id)}
-                onFocus={() => onPrefetch(active.id)}
+          <CarouselContent className="ml-0">
+            {movies.map((movie, index) => (
+              <CarouselItem
+                key={movie.id}
+                className="pl-0"
+                aria-label={`${index + 1} de ${movies.length}`}
               >
-                Ver detalles
-              </Link>
-            </Button>
-            {renderActions?.(active, setDialogOpen)}
-          </div>
-        </div>
+                <img
+                  src={movie.backdrop.large}
+                  srcSet={srcSet(movie)}
+                  sizes="100vw"
+                  alt=""
+                  loading={index === 0 ? 'eager' : 'lazy'}
+                  fetchPriority={index === 0 ? 'high' : 'auto'}
+                  decoding="async"
+                  className="aspect-video w-full bg-muted object-cover sm:aspect-auto sm:h-[30rem] lg:aspect-video lg:h-auto"
+                />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+        </Carousel>
 
-        {movies.length > 1 && (
-          <div className="mt-6 flex items-center gap-3">
-            <Button
-              variant="outline"
-              size="icon-sm"
-              className="rounded-full"
-              aria-label="Película anterior"
-              onClick={() => api?.scrollPrev()}
-            >
-              <ChevronLeft />
-            </Button>
-            <ol className="flex items-center gap-1.5" aria-label="Elegir película">
-              {movies.map((movie, index) => (
-                <li key={movie.id}>
-                  <button
-                    type="button"
-                    aria-label={`${movie.title} (${index + 1} de ${movies.length})`}
-                    aria-current={index === selected ? 'true' : undefined}
-                    onClick={() => api?.scrollTo(index)}
-                    className="flex h-6 items-center outline-none focus-visible:ring-3 focus-visible:ring-ring/60"
-                  >
-                    <span
-                      className={cn(
-                        'block h-1.5 rounded-full bg-foreground/30 transition-[width,background-color] duration-200 motion-reduce:transition-none',
-                        index === selected ? 'w-6 bg-primary' : 'w-1.5 hover:bg-foreground/60',
-                      )}
-                    />
-                  </button>
-                </li>
-              ))}
-            </ol>
-            <Button
-              variant="outline"
-              size="icon-sm"
-              className="rounded-full"
-              aria-label="Película siguiente"
-              onClick={() => api?.scrollNext()}
-            >
-              <ChevronRight />
-            </Button>
+        {/* Fades the image into the page so the text keeps its contrast. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 aspect-video bg-linear-to-t from-background via-background/40 to-transparent sm:aspect-auto sm:h-[30rem] sm:via-background/60 lg:hidden"
+        />
+
+        <div className="relative mx-auto -mt-16 max-w-7xl px-4 sm:absolute sm:inset-x-0 sm:bottom-0 sm:mt-0 sm:px-6 sm:pb-10 lg:static lg:order-first lg:mx-0 lg:max-w-none lg:px-0 lg:pb-0">
+          <div
+            key={active.id}
+            className="max-w-xl space-y-3 motion-safe:animate-in motion-safe:duration-300 motion-safe:fade-in motion-safe:slide-in-from-bottom-2"
+            aria-live="polite"
+          >
+            <p className="text-sm font-semibold tracking-widest text-primary uppercase">
+              {eyebrow}
+            </p>
+            <h2 className="font-display text-4xl leading-none font-semibold tracking-tight text-balance uppercase sm:text-5xl xl:text-6xl">
+              {active.title}
+            </h2>
+            <p className="text-sm text-muted-foreground tabular-nums">
+              {[active.year, active.voteCount > 0 ? `★ ${formatRating(active.rating)}` : null]
+                .filter(Boolean)
+                .join(' · ')}
+            </p>
+            {active.overview && (
+              <p className="line-clamp-2 max-w-prose text-pretty sm:line-clamp-3">
+                {active.overview}
+              </p>
+            )}
+            <div className="flex flex-wrap gap-2 pt-1">
+              <Button size="lg" asChild>
+                <Link
+                  to={moviePath(active.id)}
+                  onMouseEnter={() => onPrefetch(active.id)}
+                  onFocus={() => onPrefetch(active.id)}
+                >
+                  Ver detalles
+                </Link>
+              </Button>
+              {renderActions?.(active, setDialogOpen)}
+            </div>
           </div>
-        )}
+
+          {movies.length > 1 && (
+            <div className="mt-6 flex items-center gap-3">
+              <Button
+                variant="outline"
+                size="icon-sm"
+                className="rounded-full"
+                aria-label="Película anterior"
+                onClick={() => api?.scrollPrev()}
+              >
+                <ChevronLeft />
+              </Button>
+              <ol className="flex items-center gap-1.5" aria-label="Elegir película">
+                {movies.map((movie, index) => (
+                  <li key={movie.id}>
+                    <button
+                      type="button"
+                      aria-label={`${movie.title} (${index + 1} de ${movies.length})`}
+                      aria-current={index === selected ? 'true' : undefined}
+                      onClick={() => api?.scrollTo(index)}
+                      className="flex h-6 items-center outline-none focus-visible:ring-3 focus-visible:ring-ring/60"
+                    >
+                      <span
+                        className={cn(
+                          'block h-1.5 rounded-full bg-foreground/30 transition-[width,background-color] duration-200 motion-reduce:transition-none',
+                          index === selected ? 'w-6 bg-primary' : 'w-1.5 hover:bg-foreground/60',
+                        )}
+                      />
+                    </button>
+                  </li>
+                ))}
+              </ol>
+              <Button
+                variant="outline"
+                size="icon-sm"
+                className="rounded-full"
+                aria-label="Película siguiente"
+                onClick={() => api?.scrollNext()}
+              >
+                <ChevronRight />
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );
@@ -186,12 +204,14 @@ export function HeroCarousel({ movies, eyebrow, onPrefetch, renderActions }: Her
 export function HeroCarouselSkeleton() {
   return (
     <div className="relative" aria-label="Cargando películas en cartelera">
-      <Skeleton className="aspect-video w-full rounded-none sm:aspect-auto sm:h-[30rem] lg:h-[36rem]" />
-      <div className="mx-auto max-w-7xl space-y-3 px-4 pt-4 sm:absolute sm:inset-x-0 sm:bottom-0 sm:px-6 sm:pb-10">
-        <Skeleton className="h-4 w-40" />
-        <Skeleton className="h-12 w-3/4 max-w-lg" />
-        <Skeleton className="h-4 w-full max-w-md" />
-        <Skeleton className="h-10 w-36" />
+      <div className="mx-auto lg:grid lg:max-w-screen-2xl lg:grid-cols-[minmax(20rem,1fr)_minmax(0,2fr)] lg:items-center lg:gap-12 lg:px-6 lg:py-10">
+        <Skeleton className="aspect-video w-full rounded-none sm:aspect-auto sm:h-[30rem] lg:aspect-video lg:h-auto lg:rounded-xl" />
+        <div className="mx-auto max-w-7xl space-y-3 px-4 pt-4 sm:absolute sm:inset-x-0 sm:bottom-0 sm:px-6 sm:pb-10 lg:static lg:order-first lg:mx-0 lg:max-w-none lg:p-0">
+          <Skeleton className="h-4 w-40" />
+          <Skeleton className="h-12 w-3/4 max-w-lg" />
+          <Skeleton className="h-4 w-full max-w-md" />
+          <Skeleton className="h-10 w-36" />
+        </div>
       </div>
     </div>
   );
