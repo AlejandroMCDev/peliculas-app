@@ -12,10 +12,6 @@ const TODAY = new Date('2026-10-01T12:00:00Z');
 
 type Reply = { status: number; data?: unknown } | 'network-error';
 
-/**
- * A real axios client whose adapter answers from memory instead of the network: the interceptors,
- * headers and params under test run exactly as in the app.
- */
 function setup(reply: Reply, token = 'test-token') {
   const requests: InternalAxiosRequestConfig[] = [];
   const client = createTmdbClient(token);

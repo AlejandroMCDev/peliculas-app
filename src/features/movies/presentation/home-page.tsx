@@ -12,7 +12,6 @@ import {
 } from './movie-queries';
 import { browsePath } from './paths';
 
-/** Route container for `/`: hero with what is in theatres, then one carousel per section. */
 export function HomePage() {
   const featured = useFeaturedMovies(HOME_REGION);
   const prefetchMovie = usePrefetchMovie();
@@ -29,7 +28,6 @@ export function HomePage() {
           <ErrorState error={featured.error} onRetry={() => void featured.refetch()} />
         </div>
       ) : (
-        // No movies in theatres with a wide image: no hero, the page starts at the sections.
         featured.data.length > 0 && (
           <HeroCarousel
             movies={featured.data}
@@ -56,10 +54,6 @@ type ShelfContainerProps = {
   onPrefetch: (id: number) => void;
 };
 
-/**
- * Every section loads right away: each is one small JSON request and posters are lazy-loaded by the
- * browser. (Loading on scroll left sections as skeletons after a reload restored the scroll below them.)
- */
 function ShelfContainer({ shelf, onPrefetch }: ShelfContainerProps) {
   const query = useMovieShelf(shelf.source);
 
@@ -78,7 +72,6 @@ function ShelfContainer({ shelf, onPrefetch }: ShelfContainerProps) {
   );
 }
 
-/** Trailer button for the hero's active movie: its detail (with videos) loads only for that one. */
 function HeroTrailer({
   movie,
   onOpenChange,

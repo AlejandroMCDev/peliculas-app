@@ -9,17 +9,14 @@ import {
 } from '@/shared/ui/input-group';
 
 type SearchInputProps = {
-  /** The committed query (from the URL). */
   value: string;
   onChange: (query: string) => void;
 };
 
 export function SearchInput({ value, onChange }: SearchInputProps) {
-  // The input keeps its own text so typing is instant; the URL only updates after a pause.
   const [text, setText] = useState(value);
   const [lastValue, setLastValue] = useState(value);
 
-  // The URL changed from outside (a chip, "Limpiar", back button): show it in the input.
   if (value !== lastValue) {
     setLastValue(value);
     if (value !== text.trim()) setText(value);

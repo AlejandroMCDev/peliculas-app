@@ -12,25 +12,15 @@ import { moviePath } from '../paths';
 
 type HeroCarouselProps = {
   movies: FeaturedMovie[];
-  /** Short line above the title, e.g. "En cartelera en Perú". */
   eyebrow: string;
   onPrefetch: (id: number) => void;
-  /**
-   * Extra actions for the movie on screen (the trailer button): only the active one is rendered.
-   * An action that opens a dialog reports it, so autoplay does not change the movie behind it.
-   */
   renderActions?: (movie: FeaturedMovie, onDialogOpenChange: (open: boolean) => void) => ReactNode;
 };
 
 const AUTOPLAY_MS = 6000;
-// Backdrop widths built in infrastructure (small/medium/large).
 const srcSet = ({ backdrop }: FeaturedMovie) =>
   `${backdrop.small} 300w, ${backdrop.medium} 780w, ${backdrop.large} 1280w`;
 
-/**
- * Images slide inside the carousel; the text panel sits outside it and always shows the active
- * movie. That keeps one set of buttons and lets the trailer load only for the movie on screen.
- */
 export function HeroCarousel({ movies, eyebrow, onPrefetch, renderActions }: HeroCarouselProps) {
   const [api, setApi] = useState<CarouselApi>();
   const [selected, setSelected] = useState(0);
@@ -40,7 +30,6 @@ export function HeroCarousel({ movies, eyebrow, onPrefetch, renderActions }: Her
   const reducedMotion = usePrefersReducedMotion();
   const active = movies[selected] ?? movies[0];
 
-  // Sync with Embla (an external system): which slide is showing.
   useEffect(() => {
     if (!api) return;
     const onSelect = () => setSelected(api.selectedScrollSnap());
@@ -49,13 +38,10 @@ export function HeroCarousel({ movies, eyebrow, onPrefetch, renderActions }: Her
     return () => void api.off('select', onSelect);
   }, [api]);
 
-  // Autoplay, paused while the user points at it, works inside it, watches its trailer, or asked
-  // for less motion.
   const autoplay =
     !!api && movies.length > 1 && !hovered && !focused && !dialogOpen && !reducedMotion;
   useEffect(() => {
     if (!autoplay || !api) return;
-    // `selected` in the deps restarts the countdown after a manual change of slide.
     const timer = setInterval(() => api.scrollNext(), AUTOPLAY_MS);
     return () => clearInterval(timer);
   }, [autoplay, api, selected]);
@@ -73,7 +59,6 @@ export function HeroCarousel({ movies, eyebrow, onPrefetch, renderActions }: Her
         if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false);
       }}
     >
-      {/* Wide screens: the active image, blurred, fills the band around the uncropped one. */}
       <div aria-hidden className="absolute inset-0 -z-10 hidden lg:block">
         <img
           src={active.backdrop.small}
@@ -111,7 +96,6 @@ export function HeroCarousel({ movies, eyebrow, onPrefetch, renderActions }: Her
           </CarouselContent>
         </Carousel>
 
-        {/* Fades the image into the page so the text keeps its contrast. */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-x-0 top-0 aspect-video bg-linear-to-t from-background via-background/40 to-transparent sm:aspect-auto sm:h-[30rem] sm:via-background/60 lg:hidden"

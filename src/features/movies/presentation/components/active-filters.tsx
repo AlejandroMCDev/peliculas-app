@@ -15,7 +15,6 @@ type ActiveFiltersProps = {
 
 type Chip = { key: string; label: string; remove: Partial<MovieFilters> };
 
-/** Pure: turns the filters into removable chips. */
 export function ActiveFilters({
   filters,
   genres,
@@ -57,7 +56,6 @@ function buildChips(
   genres: Genre[],
   peopleNames: Map<number, string>,
 ): Chip[] {
-  // In search mode the other filters do not apply, so only the search is shown as active.
   if (isSearchMode(filters)) {
     return [{ key: 'query', label: `“${filters.query}”`, remove: { query: '' } }];
   }

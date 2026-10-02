@@ -22,7 +22,6 @@ type RegionalLists = {
   discovered: Movie[];
 };
 
-/** Test double for the port: records the calls it gets and answers from fixed data. */
 export function createInMemoryMovieRepository(
   people: Person[] = [],
   lists: Partial<RegionalLists> = {},

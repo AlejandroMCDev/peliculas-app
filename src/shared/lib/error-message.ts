@@ -2,7 +2,6 @@ import { isAppError } from './errors';
 
 type ErrorMessage = { title: string; description: string; canRetry: boolean };
 
-// Presentation maps error codes to user-facing copy (Spanish UI).
 export function describeError(error: unknown): ErrorMessage {
   if (isAppError(error, 'CONFIG')) {
     return {

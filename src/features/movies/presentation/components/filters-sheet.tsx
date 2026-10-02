@@ -15,7 +15,6 @@ import {
 
 type FiltersSheetProps = { activeCount: number; children: ReactNode };
 
-/** Mobile/tablet: the same filters panel, inside a Sheet. */
 export function FiltersSheet({ activeCount, children }: FiltersSheetProps) {
   return (
     <Sheet>

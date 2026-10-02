@@ -15,7 +15,6 @@ export function RootLayout() {
               className="flex items-center gap-2 rounded-md outline-none focus-visible:ring-3 focus-visible:ring-ring/60"
             >
               <Clapperboard className="size-6 text-primary" aria-hidden />
-              {/* On narrow phones only the icon: the nav links need the room. */}
               <span className="hidden font-display text-2xl font-semibold tracking-wide uppercase min-[400px]:inline">
                 Cartelera
               </span>
@@ -45,7 +44,6 @@ export function RootLayout() {
         </p>
       </footer>
 
-      {/* Back from a detail returns to the same scroll position in the list. */}
       <ScrollRestoration />
     </div>
   );

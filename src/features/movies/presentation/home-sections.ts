@@ -2,18 +2,14 @@ import type { ShelfSource } from '../application/list-movie-shelf';
 import type { MovieFilters } from '../domain/movie-filters';
 import type { Region } from '../domain/movie-repository';
 
-/** Country for theatre listings, popularity and upcoming releases on the home page. */
 export const HOME_REGION: Region = 'PE';
 
-// TMDB genre ids (stable across languages).
-const GENRE = { action: 28, mystery: 9648, horror: 27, scienceFiction: 878 } as const;
+const GENRE = { action: 28, mystery: 9648, horror: 27, scienceFiction: 878, comedy: 35 } as const;
 
 export type HomeShelf = {
-  /** Also the morph scope of its cards. */
   id: string;
   title: string;
   source: ShelfSource;
-  /** Filters for the "Ver todas" link; omitted when /peliculas cannot express the section. */
   seeAll?: Partial<MovieFilters>;
   emptyText: string;
 };
@@ -26,7 +22,6 @@ const genreShelf = (id: string, title: string, genre: number): HomeShelf => ({
   emptyText: 'No encontramos películas de este género.',
 });
 
-/** The home sections, in display order. Adding one is adding an entry here. */
 export const HOME_SHELVES: HomeShelf[] = [
   {
     id: 'popular-pe',
@@ -44,6 +39,7 @@ export const HOME_SHELVES: HomeShelf[] = [
   genreShelf('mystery', 'Misterio', GENRE.mystery),
   genreShelf('horror', 'Terror', GENRE.horror),
   genreShelf('science-fiction', 'Ciencia ficción', GENRE.scienceFiction),
+  genreShelf('comedy', 'Comedia', GENRE.comedy),
   {
     id: 'top-rated',
     title: 'Mejor valoradas',

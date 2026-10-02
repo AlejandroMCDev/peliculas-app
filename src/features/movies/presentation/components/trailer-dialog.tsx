@@ -13,7 +13,6 @@ import type { Trailer } from '../../domain/movie';
 type TrailerDialogProps = {
   trailer: Trailer;
   movieTitle: string;
-  /** "outline" when another button on the view is the primary action. */
   variant?: 'default' | 'outline';
   onOpenChange?: (open: boolean) => void;
 };
@@ -37,7 +36,6 @@ export function TrailerDialog({
           <DialogTitle className="line-clamp-1">{trailer.name}</DialogTitle>
           <DialogDescription className="sr-only">Tráiler de {movieTitle}</DialogDescription>
         </DialogHeader>
-        {/* The iframe only exists while the dialog is open: nothing loads from YouTube until then. */}
         <div className="aspect-video overflow-hidden rounded-lg bg-black">
           <iframe
             src={`https://www.youtube-nocookie.com/embed/${trailer.youtubeKey}?autoplay=1&rel=0`}

@@ -19,7 +19,6 @@ import { formatDepartment } from '../format';
 import { usePeopleSearch } from '../movie-queries';
 
 type PersonPickerProps = {
-  /** Accessible name of the trigger, e.g. "Añadir actor". */
   label: string;
   placeholder: string;
   excludeIds: number[];
@@ -27,7 +26,6 @@ type PersonPickerProps = {
   disabled?: boolean;
 };
 
-/** Combobox that searches people in TMDB while typing (Popover + Command, server-side search). */
 export function PersonPicker({
   label,
   placeholder,
@@ -60,7 +58,6 @@ export function PersonPicker({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-(--radix-popover-trigger-width) min-w-64 p-0" align="start">
-        {/* shouldFilter={false}: TMDB already filtered; cmdk must not filter the results again. */}
         <Command shouldFilter={false}>
           <CommandInput placeholder="Escribe un nombre…" value={text} onValueChange={setText} />
           <CommandList>

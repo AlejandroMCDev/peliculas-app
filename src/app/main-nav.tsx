@@ -10,7 +10,6 @@ import {
 
 const LINKS = [
   { to: '/', label: 'Inicio', end: true },
-  // Not `end`: a movie detail (/peliculas/123) also highlights "Películas".
   { to: MOVIES_PATH, label: 'Películas', end: false },
 ] as const;
 
@@ -30,7 +29,6 @@ function MainNavItem({ to, label, end }: { to: string; label: string; end: boole
   const isActive = useMatch({ path: to, end }) !== null;
   return (
     <NavigationMenuItem>
-      {/* NavLink adds aria-current="page"; `active` gives Radix the same information. */}
       <NavigationMenuLink asChild active={isActive}>
         <NavLink
           to={to}

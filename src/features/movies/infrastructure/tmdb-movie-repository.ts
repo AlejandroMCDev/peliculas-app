@@ -20,16 +20,13 @@ const SORT_PARAM: Record<MovieSort, string> = {
   votes: 'vote_count.desc',
 };
 
-// Without a vote floor, "best rated" is full of films with a single 10/10 vote.
 const MIN_VOTES_FOR_RATING = 200;
-// TMDB refuses pages above 500 even when total_pages is larger.
 const MAX_PAGES = 500;
 const PEOPLE_LIMIT = 8;
 
 const moviePageDtoSchema = pageDtoSchema(movieDtoSchema);
 const personPageDtoSchema = pageDtoSchema(personDtoSchema);
 
-/** Maps the domain filters to /discover/movie query params (undefined params are dropped by axios). */
 export function toDiscoverParams(filters: MovieFilters, page: number, today: Date) {
   const usesRating = filters.sort === 'rating' || filters.minRating > 0;
   const join = (ids: number[]) => (ids.length ? ids.join(',') : undefined);
@@ -39,10 +36,8 @@ export function toDiscoverParams(filters: MovieFilters, page: number, today: Dat
     sort_by: SORT_PARAM[filters.sort],
     with_genres: join(filters.genres),
     with_cast: join(filters.cast),
-    // with_crew matches any crew job, not only "Director" (approved trade-off).
     with_crew: filters.director ?? undefined,
     'primary_release_date.gte': filters.yearFrom ? `${filters.yearFrom}-01-01` : undefined,
-    // "Most recent" should not list films that are not released yet.
     'primary_release_date.lte': filters.yearTo
       ? `${filters.yearTo}-12-31`
       : filters.sort === 'release'
@@ -55,10 +50,6 @@ export function toDiscoverParams(filters: MovieFilters, page: number, today: Dat
   };
 }
 
-/**
- * With `region`, TMDB's `release_date.*` filters use that country's release dates.
- * Release types 2|3 = theatrical (limited or wide): skips festivals and digital-only dates.
- */
 function regionalParams(region: Region) {
   return { region, with_release_type: '2|3', include_adult: false, page: 1 };
 }
@@ -100,7 +91,6 @@ export function createTmdbMovieRepository(
     async getMovieDetail(id) {
       const dto = await get(movieDetailDtoSchema, `/movie/${id}`, {
         append_to_response: 'credits,videos,recommendations',
-        // Trailers are often only in English: ask for both languages.
         include_video_language: 'es,en',
       });
       return toMovieDetail(dto);

@@ -24,7 +24,6 @@ import { movieRepository } from '../movies.composition';
 const MINUTE = 60_000;
 const DAY = 24 * 60 * MINUTE;
 
-// Query key factory: one place defines every cache key, so invalidation and lookups never drift.
 export const movieKeys = {
   all: ['movies'] as const,
   lists: () => [...movieKeys.all, 'list'] as const,
@@ -39,7 +38,6 @@ export const movieKeys = {
   person: (id: number) => ['people', id] as const,
 };
 
-/** In search mode only the text matters: ignoring the other filters avoids pointless cache misses. */
 function cacheKeyFor(filters: MovieFilters) {
   return isSearchMode(filters) ? { query: filters.query.trim() } : { ...filters, query: '' };
 }
@@ -51,7 +49,6 @@ export function useMovieList(filters: MovieFilters) {
     initialPageParam: 1,
     getNextPageParam: (last: MoviePage) =>
       last.page < last.totalPages ? last.page + 1 : undefined,
-    // While a new filter loads, keep showing the previous results (dimmed) instead of a blank grid.
     placeholderData: keepPreviousData,
   });
 }
@@ -68,19 +65,11 @@ export function useMovieDetail(id: number) {
   return useQuery(movieDetailOptions(id));
 }
 
-/** Starts loading a detail before the click (hover/focus), so the page often opens fully loaded. */
 export function usePrefetchMovie() {
   const queryClient = useQueryClient();
-  return useCallback(
-    (id: number) => void queryClient.prefetchQuery(movieDetailOptions(id)),
-    [queryClient],
-  );
+  return useCallback((id: number) => void queryClient.query(movieDetailOptions(id)), [queryClient]);
 }
 
-/**
- * The movie as already seen in a list (or in another detail's recommendations). The detail page
- * paints its poster immediately with it, which is what lets the card → detail morph happen.
- */
 export function useCachedMovie(id: number): Movie | undefined {
   const queryClient = useQueryClient();
   return useMemo(() => findCachedMovie(queryClient, id), [queryClient, id]);
@@ -110,7 +99,6 @@ function findCachedMovie(queryClient: QueryClient, id: number): Movie | undefine
   return undefined;
 }
 
-/** The home hero. Theatre listings change weekly: an hour of cache is plenty. */
 export function useFeaturedMovies(region: Region) {
   return useQuery({
     queryKey: movieKeys.featured(region),
@@ -119,7 +107,6 @@ export function useFeaturedMovies(region: Region) {
   });
 }
 
-/** One home section. `enabled` lets a section wait until it scrolls near the viewport. */
 export function useMovieShelf(source: ShelfSource) {
   return useQuery({
     queryKey: movieKeys.shelf(source),
@@ -148,7 +135,6 @@ export function usePeopleSearch(query: string) {
   });
 }
 
-/** Names for the people ids stored in the URL (chips and selected lists). Cached for a day. */
 export function usePeopleNames(ids: number[]): Map<number, string> {
   return useQueries({
     queries: ids.map((id) => ({
@@ -156,7 +142,6 @@ export function usePeopleNames(ids: number[]): Map<number, string> {
       queryFn: () => getPerson(movieRepository, id),
       staleTime: DAY,
     })),
-    // `combine` is memoized by TanStack Query: the Map only changes when a result changes.
     combine: toNameMap,
   });
 }

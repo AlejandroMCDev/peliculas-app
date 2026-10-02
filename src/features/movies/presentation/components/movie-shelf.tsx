@@ -8,7 +8,6 @@ import { MovieCarousel, MovieCarouselSkeleton } from './movie-carousel';
 type MovieShelfProps = {
   id: string;
   title: string;
-  /** Link to the full, filterable list; omitted when /peliculas cannot express this section. */
   seeAllHref?: string;
   movies: Movie[] | undefined;
   isLoading: boolean;
@@ -18,7 +17,6 @@ type MovieShelfProps = {
   onPrefetch: (id: number) => void;
 };
 
-/** A home section: title, optional "Ver todas" link and a carousel of movies. */
 export function MovieShelf({
   id,
   title,
@@ -31,6 +29,8 @@ export function MovieShelf({
   onPrefetch,
 }: MovieShelfProps) {
   const headingId = `shelf-${id}`;
+
+  console.log({ movies });
 
   return (
     <section aria-labelledby={headingId} className="space-y-4">

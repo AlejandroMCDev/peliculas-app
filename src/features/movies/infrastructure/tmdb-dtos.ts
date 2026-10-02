@@ -1,8 +1,5 @@
 import { z } from 'zod';
 
-// TMDB's response shapes. Optional/nullable fields are common, so each one has a safe fallback:
-// a single odd movie must not break a whole page of results.
-
 const nullablePath = z.string().nullish().catch(null);
 
 export const movieDtoSchema = z.object({

@@ -6,10 +6,6 @@ import {
   type MovieFilters,
 } from '../domain/movie-filters';
 
-/**
- * The filters live in the URL: shareable, they survive a reload, and coming back from a detail
- * page restores them. The URL is the single source of truth; components never copy it to state.
- */
 export function useMovieFilters() {
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -26,7 +22,6 @@ export function useMovieFilters() {
             ...movieFiltersFromParams(Object.fromEntries(current)),
             ...patch,
           }),
-        // replace: tweaking a filter should not add a history entry for every click.
         { replace: true },
       ),
     [setSearchParams],

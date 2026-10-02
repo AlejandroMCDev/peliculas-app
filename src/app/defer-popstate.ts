@@ -1,11 +1,3 @@
-/**
- * React renders updates that start inside a `popstate` event (browser Back/Forward, `navigate(-1)`)
- * synchronously, and those renders skip `<ViewTransition>`. This hands `popstate` to the router one
- * task later, outside the event, so Back is an ordinary transition and the poster morph plays both ways.
- *
- * It returns a window for `createBrowserRouter({ window })`: identical to the real one except that
- * the router's `popstate` listeners are called with a short delay.
- */
 export function deferPopstate(win: Window): Window {
   const wrapped = new WeakMap<EventListenerOrEventListenerObject, EventListener>();
 
@@ -43,7 +35,6 @@ export function deferPopstate(win: Window): Window {
       if (property === 'addEventListener') return addEventListener;
       if (property === 'removeEventListener') return removeEventListener;
       const value: unknown = Reflect.get(target, property, target);
-      // Window methods (setTimeout, scrollTo…) throw "Illegal invocation" unless called on the real window.
       return typeof value === 'function' ? value.bind(target) : value;
     },
   });

@@ -13,7 +13,6 @@ import { MovieCarousel } from './movie-carousel';
 import { TrailerDialog } from './trailer-dialog';
 
 type MovieDetailViewProps = {
-  /** What is already known from a list (title, poster…): painted at once while the detail loads. */
   preview: Movie | undefined;
   detail: MovieDetail | undefined;
   error: unknown;
@@ -51,7 +50,6 @@ export function MovieDetailView({
             <header className="grid gap-6 md:grid-cols-[18rem_1fr] md:gap-10">
               <div className="mx-auto aspect-2/3 w-56 overflow-hidden rounded-xl shadow-2xl shadow-black/40 sm:w-64 md:w-full">
                 {movie ? (
-                  // Same name as the card poster: this is the other half of the morph.
                   <ViewTransition name={`poster-${movie.id}`} share="morph" default="none">
                     <PosterImage
                       image={movie.poster}
@@ -110,7 +108,7 @@ export function MovieDetailView({
 function Backdrop({ src }: { src: string }) {
   return (
     <div
-      className="pointer-events-none absolute inset-x-0 top-0 h-[28rem] overflow-hidden"
+      className="pointer-events-none absolute inset-x-0 top-0 h-112 overflow-hidden"
       aria-hidden
     >
       <img

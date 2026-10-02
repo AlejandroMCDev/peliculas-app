@@ -3,10 +3,6 @@ import { AppError } from '@/shared/lib/errors';
 
 export const TMDB_LANGUAGE = 'es-MX';
 
-/**
- * One axios instance for every TMDB call: base URL, auth header, language and timeout are set
- * once here, and every failure leaves this file as an AppError with a code the UI understands.
- */
 export function createTmdbClient(token: string | undefined): AxiosInstance {
   const client = axios.create({
     baseURL: 'https://api.themoviedb.org/3',

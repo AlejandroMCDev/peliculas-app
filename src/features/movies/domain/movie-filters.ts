@@ -9,14 +9,12 @@ export const RUNTIME_MAX = 240;
 export const RATING_MAX = 9;
 
 export type MovieFilters = {
-  /** Title search. While it has text, the other filters do not apply (TMDB limitation). */
   query: string;
   genres: number[];
   cast: number[];
   director: number | null;
   yearFrom: number | null;
   yearTo: number | null;
-  /** 0 = any */
   minRating: number;
   runtimeMin: number | null;
   runtimeMax: number | null;
@@ -35,9 +33,6 @@ export const DEFAULT_FILTERS: MovieFilters = {
   runtimeMax: null,
   sort: 'popularity',
 };
-
-// --- URL <-> filters --------------------------------------------------------------------------
-// The URL is external input: every field is validated and falls back to its default when invalid.
 
 const idList = z
   .string()
@@ -75,7 +70,6 @@ export type FilterParams = Record<string, string | undefined>;
 
 export function movieFiltersFromParams(params: FilterParams): MovieFilters {
   const p = paramsSchema.parse(params);
-  // A reversed range ("2000 to 1990") is almost always a slip: swap it instead of failing.
   const [yearFrom, yearTo] = orderRange(p.from, p.to);
   const [runtimeMin, runtimeMax] = orderRange(p.rmin, p.rmax);
   return {
@@ -92,7 +86,6 @@ export function movieFiltersFromParams(params: FilterParams): MovieFilters {
   };
 }
 
-/** Only non-default values are written, so a clean state is a clean URL ("/"). */
 export function movieFiltersToParams(filters: MovieFilters): Record<string, string> {
   const params: Record<string, string> = {};
   if (filters.query.trim()) params.q = filters.query.trim();
@@ -112,13 +105,10 @@ function orderRange(a: number | null, b: number | null): [number | null, number 
   return a !== null && b !== null && a > b ? [b, a] : [a, b];
 }
 
-// --- Business rules -----------------------------------------------------------------------------
-
 export function isSearchMode(filters: MovieFilters): boolean {
   return filters.query.trim().length > 0;
 }
 
-/** How many discover filters are active (sort and the title search are not counted). */
 export function activeFilterCount(filters: MovieFilters): number {
   return (
     filters.genres.length +

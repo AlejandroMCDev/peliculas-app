@@ -1,7 +1,6 @@
 import { Card, CardContent } from '@/shared/ui/card';
 import { Skeleton } from '@/shared/ui/skeleton';
 
-// Same box model as MovieCard, so the grid does not jump when real cards replace skeletons.
 export function MovieCardSkeleton() {
   return (
     <Card className="gap-0 py-0" aria-hidden>

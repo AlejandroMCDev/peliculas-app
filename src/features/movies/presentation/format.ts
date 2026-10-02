@@ -1,5 +1,3 @@
-// Display formatting for the Spanish UI. Pure functions, no React.
-
 export function formatRating(rating: number): string {
   return rating.toFixed(1);
 }

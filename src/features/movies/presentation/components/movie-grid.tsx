@@ -7,11 +7,8 @@ import { MovieCardSkeleton } from './movie-card-skeleton';
 
 type MovieGridProps = {
   movies: Movie[];
-  /** First load: only skeletons. */
   isLoading: boolean;
-  /** Next page on its way: skeletons appended at the end. */
   isLoadingMore: boolean;
-  /** Showing the previous filter's results while the new ones load. */
   isStale: boolean;
   hasMore: boolean;
   onLoadMore: () => void;
@@ -37,7 +34,6 @@ export function MovieGrid({
 }: MovieGridProps) {
   const [sentinelRef, sentinelInView] = useInView<HTMLDivElement>();
 
-  // Infinite scroll: when the sentinel below the grid gets close to the viewport, load the next page.
   useEffect(() => {
     if (sentinelInView && hasMore && !isLoadingMore && !isStale) onLoadMore();
   }, [sentinelInView, hasMore, isLoadingMore, isStale, onLoadMore]);

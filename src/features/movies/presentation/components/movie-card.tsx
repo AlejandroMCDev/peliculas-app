@@ -9,7 +9,6 @@ import { RatingBadge } from './rating-badge';
 
 type MovieCardProps = {
   movie: Movie;
-  /** Where the card lives ("browse", "action"…): tells apart the same movie in two lists. */
   scope: string;
   onPrefetch: (id: number) => void;
   sizes?: string;
@@ -32,8 +31,6 @@ export function MovieCard({ movie, scope, onPrefetch, sizes = GRID_SIZES }: Movi
     >
       <Card className="gap-0 py-0 transition-[translate,box-shadow] duration-200 group-hover:-translate-y-1 group-hover:shadow-lg group-hover:shadow-primary/10 motion-reduce:transition-none motion-reduce:group-hover:translate-y-0">
         <div className="relative aspect-2/3 overflow-hidden">
-          {/* Same name as the detail poster: React morphs one into the other on navigation.
-              Only the clicked card gets it, so the name stays unique (see morph-source.ts). */}
           <ViewTransition
             name={isMorphSource ? `poster-${movie.id}` : undefined}
             share="morph"
@@ -52,6 +49,7 @@ export function MovieCard({ movie, scope, onPrefetch, sizes = GRID_SIZES }: Movi
             {movie.title}
           </h3>
           <p className="text-sm text-muted-foreground tabular-nums">{movie.year ?? 'Sin fecha'}</p>
+          <p>{movie.runtime}</p>
         </CardContent>
       </Card>
     </Link>

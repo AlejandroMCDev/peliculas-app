@@ -32,6 +32,7 @@ export default defineConfig([
     languageOptions: {
       globals: globals.browser,
     },
+    rules: { 'no-empty': ['error', { allowEmptyCatch: true }] },
   },
   layer(['src/**/*.{ts,tsx}'], []),
   layer(

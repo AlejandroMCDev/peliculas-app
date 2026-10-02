@@ -13,10 +13,8 @@ import { PersonPicker } from './person-picker';
 
 type FiltersPanelProps = {
   filters: MovieFilters;
-  /** undefined while loading; empty when they could not be loaded. */
   genres: Genre[] | undefined;
   peopleNames: Map<number, string>;
-  /** Title search is active: TMDB cannot combine it with these filters. */
   disabled: boolean;
   onChange: (patch: Partial<MovieFilters>) => void;
 };
@@ -215,9 +213,6 @@ function YearSelect({ label, value, onChange }: YearSelectProps) {
   );
 }
 
-// Sliders keep a local draft while dragging and only write the URL when the user lets go
-// (onValueCommit): one request per decision, not one per pixel.
-
 function RatingFilter({ value, onChange }: { value: number; onChange: (rating: number) => void }) {
   const [draft, setDraft] = useState<number | null>(null);
   const shown = draft ?? value;
@@ -253,7 +248,6 @@ function RuntimeFilter({ min, max, onChange }: RuntimeFilterProps) {
   const [draft, setDraft] = useState<number[] | null>(null);
   const shown = draft ?? [min ?? 0, max ?? RUNTIME_MAX];
   const [low = 0, high = RUNTIME_MAX] = shown;
-  // The slider ends mean "no limit".
   const toFilter = (lo: number, hi: number) =>
     [lo > 0 ? lo : null, hi < RUNTIME_MAX ? hi : null] as const;
   const label = formatRuntimeRange(...toFilter(low, high)) ?? 'Cualquier duración';

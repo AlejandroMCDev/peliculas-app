@@ -10,7 +10,6 @@ import type { MovieDetailDto, MovieDto, PersonDto, VideoDto } from './tmdb-dtos'
 
 const IMAGE_BASE = 'https://image.tmdb.org/t/p';
 
-// TMDB serves each image in fixed widths; these match how big each kind is shown in the UI.
 const IMAGE_SIZES = {
   poster: ['w185', 'w342', 'w500'],
   backdrop: ['w300', 'w780', 'w1280'],
@@ -63,7 +62,6 @@ export function toPerson(dto: PersonDto): Person {
   };
 }
 
-/** Prefers an official Spanish YouTube trailer, then any Spanish one, then English. */
 export function pickTrailer(videos: VideoDto[]): Trailer | null {
   const trailers = videos.filter((video) => video.site === 'YouTube' && video.type === 'Trailer');
   const score = (video: VideoDto) => (video.iso_639_1 === 'es' ? 2 : 0) + (video.official ? 1 : 0);

@@ -21,7 +21,6 @@ import { SortSelect } from './components/sort-select';
 import { useGenres, useMovieList, usePeopleNames, usePrefetchMovie } from './movie-queries';
 import { useMovieFilters } from './use-movie-filters';
 
-/** Route container: reads the filters from the URL, loads data and wires callbacks. */
 export function MoviesPage() {
   const { filters, updateFilters, resetFilters } = useMovieFilters();
   const list = useMovieList(filters);

@@ -16,7 +16,6 @@ createRoot(root).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        {/* useTransitions: navigations run inside startTransition, which is what fires <ViewTransition>. */}
         <RouterProvider router={router} useTransitions />
       </ThemeProvider>
     </QueryClientProvider>

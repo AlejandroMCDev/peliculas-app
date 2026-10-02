@@ -8,13 +8,10 @@ function readStoredTheme(): Theme {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored === 'light' || stored === 'dark' || stored === 'system') return stored;
-  } catch {
-    // storage can be blocked (private mode): fall back to the system preference
-  }
+  } catch {}
   return 'system';
 }
 
-// The OS preference is an external store: React re-renders when it changes.
 function subscribeToSystemTheme(onChange: () => void) {
   const media = window.matchMedia(DARK_QUERY);
   media.addEventListener('change', onChange);
@@ -35,9 +32,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, theme);
-    } catch {
-      // ignore: the choice just will not persist
-    }
+    } catch {}
   }, [theme]);
 
   const value = useMemo(() => ({ theme, resolvedTheme, setTheme }), [theme, resolvedTheme]);

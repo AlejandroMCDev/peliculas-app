@@ -5,14 +5,11 @@ import type { ImageSet } from '../../domain/movie';
 type PosterImageProps = {
   image: ImageSet | null;
   alt: string;
-  /** How wide the image is shown, so the browser downloads the right size (see `srcset`). */
   sizes: string;
-  /** Above the fold (detail hero): load now instead of lazily. */
   priority?: boolean;
   className?: string;
 };
 
-// The `w` descriptors match the TMDB widths built in infrastructure (small/medium/large).
 const WIDTHS = { small: 185, medium: 342, large: 500 } as const;
 
 export function PosterImage({ image, alt, sizes, priority = false, className }: PosterImageProps) {

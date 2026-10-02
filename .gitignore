@@ -27,3 +27,8 @@ dist-ssr
 .env*
 !.env.example
 coverage
+
+.claude
+docs
+CLAUDE.md
+.mcp.json

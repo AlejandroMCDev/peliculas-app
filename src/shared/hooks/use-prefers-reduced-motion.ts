@@ -8,7 +8,6 @@ function subscribe(onChange: () => void) {
   return () => media.removeEventListener('change', onChange);
 }
 
-/** True when the OS asks for less motion; updates live if the user changes the setting. */
 export function usePrefersReducedMotion() {
   return useSyncExternalStore(
     subscribe,
