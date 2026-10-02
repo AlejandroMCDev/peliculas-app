@@ -26,7 +26,7 @@ export function TrailerDialog({
   return (
     <Dialog onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        <Button size="lg" variant={variant}>
+        <Button className='hover:cursor-pointer' size="lg" variant={variant}>
           <Play className="fill-current" />
           Ver tráiler
         </Button>

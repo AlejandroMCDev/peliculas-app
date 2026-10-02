@@ -31,7 +31,7 @@ export function ModeToggle() {
         <DropdownMenuLabel>Tema</DropdownMenuLabel>
         <DropdownMenuRadioGroup value={theme} onValueChange={(value) => setTheme(value as Theme)}>
           {OPTIONS.map(({ value, label, icon: Icon }) => (
-            <DropdownMenuRadioItem key={value} value={value}>
+            <DropdownMenuRadioItem className='hover:cursor-pointer' key={value} value={value}>
               <Icon />
               {label}
             </DropdownMenuRadioItem>

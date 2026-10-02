@@ -24,7 +24,7 @@ export function SortSelect({ value, onChange, disabled }: SortSelectProps) {
         if (sort) onChange(sort);
       }}
     >
-      <SelectTrigger aria-label="Ordenar por" className="h-10 w-full sm:w-48">
+      <SelectTrigger aria-label="Ordenar por" className="h-10 w-full sm:w-48 hover:cursor-pointer">
         <SelectValue />
       </SelectTrigger>
       <SelectContent align="end">
