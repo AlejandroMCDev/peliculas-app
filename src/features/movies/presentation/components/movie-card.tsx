@@ -49,7 +49,6 @@ export function MovieCard({ movie, scope, onPrefetch, sizes = GRID_SIZES }: Movi
             {movie.title}
           </h3>
           <p className="text-sm text-muted-foreground tabular-nums">{movie.year ?? 'Sin fecha'}</p>
-          <p>{movie.runtime}</p>
         </CardContent>
       </Card>
     </Link>
