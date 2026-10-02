@@ -58,7 +58,7 @@ export function MovieGrid({
       >
         {movies.map((movie) => (
           <li key={movie.id}>
-            <MovieCard movie={movie} onPrefetch={onPrefetch} />
+            <MovieCard movie={movie} scope="browse" onPrefetch={onPrefetch} />
           </li>
         ))}
         {isLoadingMore && skeletons(5)}

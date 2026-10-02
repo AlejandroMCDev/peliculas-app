@@ -10,13 +10,24 @@ import {
 } from '@/shared/ui/dialog';
 import type { Trailer } from '../../domain/movie';
 
-type TrailerDialogProps = { trailer: Trailer; movieTitle: string };
+type TrailerDialogProps = {
+  trailer: Trailer;
+  movieTitle: string;
+  /** "outline" when another button on the view is the primary action. */
+  variant?: 'default' | 'outline';
+  onOpenChange?: (open: boolean) => void;
+};
 
-export function TrailerDialog({ trailer, movieTitle }: TrailerDialogProps) {
+export function TrailerDialog({
+  trailer,
+  movieTitle,
+  variant = 'default',
+  onOpenChange,
+}: TrailerDialogProps) {
   return (
-    <Dialog>
+    <Dialog onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        <Button size="lg">
+        <Button size="lg" variant={variant}>
           <Play className="fill-current" />
           Ver tráiler
         </Button>

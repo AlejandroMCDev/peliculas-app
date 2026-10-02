@@ -9,7 +9,7 @@ function renderCard(movie = aMovie()) {
   const onPrefetch = vi.fn();
   render(
     <MemoryRouter>
-      <MovieCard movie={movie} onPrefetch={onPrefetch} />
+      <MovieCard movie={movie} scope="browse" onPrefetch={onPrefetch} />
     </MemoryRouter>,
   );
   return { onPrefetch };
@@ -20,7 +20,7 @@ describe('MovieCard', () => {
     renderCard(aMovie({ id: 348, title: 'Alien', year: 1979, rating: 8.1 }));
 
     const link = screen.getByRole('link', { name: /Alien/ });
-    expect(link).toHaveAttribute('href', '/movies/348');
+    expect(link).toHaveAttribute('href', '/peliculas/348');
     expect(screen.getByText('1979')).toBeInTheDocument();
     expect(screen.getByLabelText(/8[.,]1/)).toBeInTheDocument();
   });

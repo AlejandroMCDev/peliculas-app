@@ -1,8 +1,9 @@
 # caso-01
 
 Study project: "Cartelera", a movie explorer on the TMDB API built to practice best practices, Clean
-Architecture and UI design at intermediate complexity. Users browse movies in a grid with infinite scroll,
-filter them (genres, cast, director, years, rating, runtime, sort) or search by title, and open a detail
+Architecture and UI design at intermediate complexity. The home (`/`) shows a hero of movies now playing in Peru and
+carousel sections (popular and upcoming in Peru, genres, top rated). `/peliculas` is a grid with infinite scroll
+where users filter movies (genres, cast, director, years, rating, runtime, sort) or search by title, and `/peliculas/:id` is the detail
 page (synopsis, cast, trailer, box office, recommendations). UI and data in Spanish (es-MX); code in English.
 
 ## Stack

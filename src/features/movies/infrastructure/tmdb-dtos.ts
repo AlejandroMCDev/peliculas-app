@@ -12,6 +12,8 @@ export const movieDtoSchema = z.object({
   poster_path: nullablePath,
   vote_average: z.number().catch(0),
   vote_count: z.number().catch(0),
+  backdrop_path: nullablePath,
+  overview: z.string().nullish().catch(null),
 });
 export type MovieDto = z.infer<typeof movieDtoSchema>;
 
@@ -54,9 +56,7 @@ const videoDtoSchema = z.object({
 export type VideoDto = z.infer<typeof videoDtoSchema>;
 
 export const movieDetailDtoSchema = movieDtoSchema.extend({
-  overview: z.string().nullish().catch(null),
   tagline: z.string().nullish().catch(null),
-  backdrop_path: nullablePath,
   runtime: z.number().nullish().catch(null),
   genres: z.array(genreDtoSchema).catch([]),
   budget: z.number().catch(0),

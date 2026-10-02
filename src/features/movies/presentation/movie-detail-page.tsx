@@ -4,11 +4,11 @@ import { AppError } from '@/shared/lib/errors';
 import { MovieDetailView } from './components/movie-detail-view';
 import { useCachedMovie, useMovieDetail, usePrefetchMovie } from './movie-queries';
 
-// An invalid id (/movies/abc) becomes 0: the query stays disabled and the page shows "not found".
+// An invalid id (/peliculas/abc) becomes 0: the query stays disabled and the page shows "not found".
 const idSchema = z.coerce.number().int().positive().catch(0);
 const INVALID_ID = new AppError('NOT_FOUND', 'Invalid movie id');
 
-/** Route container for `/movies/:id`. */
+/** Route container for `/peliculas/:id`. */
 export function MovieDetailPage() {
   const params = useParams();
   const id = idSchema.parse(params.id);

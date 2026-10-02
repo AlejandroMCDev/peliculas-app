@@ -9,7 +9,7 @@ import type { Movie, MovieDetail } from '../../domain/movie';
 import { formatMoney, formatRating, formatRuntime, formatVotes } from '../format';
 import { CastList, CastListSkeleton } from './cast-list';
 import { PosterImage } from './poster-image';
-import { Recommendations } from './recommendations';
+import { MovieCarousel } from './movie-carousel';
 import { TrailerDialog } from './trailer-dialog';
 
 type MovieDetailViewProps = {
@@ -86,7 +86,18 @@ export function MovieDetailView({
 
             {detail && (
               <Section title="También te puede gustar">
-                <Recommendations movies={detail.recommendations} onPrefetch={onPrefetch} />
+                {detail.recommendations.length > 0 ? (
+                  <MovieCarousel
+                    movies={detail.recommendations}
+                    label="Películas recomendadas"
+                    scope="recommendations"
+                    onPrefetch={onPrefetch}
+                  />
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    Aún no hay recomendaciones para esta película.
+                  </p>
+                )}
               </Section>
             )}
           </>

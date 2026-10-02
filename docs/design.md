@@ -26,13 +26,16 @@ accent, condensed poster-style headings. Light mode is the printed program: ivor
 
 ## Motion
 
-- Card → detail: the poster morphs (shared `<ViewTransition name="poster-<id>">`, 380 ms).
+- Card → detail: the poster morphs (shared `<ViewTransition name="poster-<id>">`, 380 ms). Only the clicked
+  card carries the name, so the same movie can sit in several home sections.
+- Home hero: auto-advances every 6 s; pauses on hover, focus, an open trailer and `prefers-reduced-motion`
+  (which also makes slide changes instant).
 - Everything else: ≤ 250 ms. All of it is disabled with `prefers-reduced-motion`.
 
 ## Don't
 
 - No hex or Tailwind palette colors (`bg-amber-500`): tokens only.
 - No second accent color; hierarchy comes from size, weight and spacing.
-- No decorative gradients. The one exception is the detail backdrop fading into the background.
+- No decorative gradients. The exceptions are the detail backdrop and the home hero image fading into the background.
 - No emoji as icons (use lucide). The ★ in ratings is text, not an icon.
 - No display font below `text-2xl` (except the header logo at `text-2xl`).

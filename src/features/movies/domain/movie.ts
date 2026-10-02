@@ -36,6 +36,19 @@ export function uniqueMovies(movies: readonly Movie[]): Movie[] {
   return movies.filter((movie) => !seen.has(movie.id) && seen.add(movie.id));
 }
 
+/** A list movie that also carries the wide image and synopsis (what TMDB lists already include). */
+export type MovieWithBackdrop = Movie & { backdrop: ImageSet | null; overview: string };
+
+/** A movie the home hero can show: it always has a wide image. */
+export type FeaturedMovie = Movie & { backdrop: ImageSet; overview: string };
+
+/** The hero needs a wide image: movies without one are skipped, never shown with a blank slide. */
+export function pickFeatured(movies: readonly MovieWithBackdrop[], count: number): FeaturedMovie[] {
+  return movies
+    .flatMap(({ backdrop, ...movie }) => (backdrop ? [{ ...movie, backdrop }] : []))
+    .slice(0, count);
+}
+
 export type Trailer = { youtubeKey: string; name: string };
 
 export type MovieDetail = Movie & {

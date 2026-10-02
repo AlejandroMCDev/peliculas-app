@@ -1,4 +1,11 @@
-import type { ImageSet, Movie, MovieDetail, Person, Trailer } from '../domain/movie';
+import type {
+  ImageSet,
+  Movie,
+  MovieDetail,
+  MovieWithBackdrop,
+  Person,
+  Trailer,
+} from '../domain/movie';
 import type { MovieDetailDto, MovieDto, PersonDto, VideoDto } from './tmdb-dtos';
 
 const IMAGE_BASE = 'https://image.tmdb.org/t/p';
@@ -39,6 +46,14 @@ export function toMovie(dto: MovieDto): Movie {
   };
 }
 
+export function toMovieWithBackdrop(dto: MovieDto): MovieWithBackdrop {
+  return {
+    ...toMovie(dto),
+    backdrop: toImageSet(dto.backdrop_path, 'backdrop'),
+    overview: dto.overview?.trim() ?? '',
+  };
+}
+
 export function toPerson(dto: PersonDto): Person {
   return {
     id: dto.id,
@@ -61,10 +76,8 @@ const RECOMMENDATIONS_LIMIT = 12;
 
 export function toMovieDetail(dto: MovieDetailDto): MovieDetail {
   return {
-    ...toMovie(dto),
-    overview: dto.overview?.trim() ?? '',
+    ...toMovieWithBackdrop(dto),
     tagline: dto.tagline?.trim() || null,
-    backdrop: toImageSet(dto.backdrop_path, 'backdrop'),
     runtime: dto.runtime || null,
     genres: dto.genres,
     directors: dto.credits.crew

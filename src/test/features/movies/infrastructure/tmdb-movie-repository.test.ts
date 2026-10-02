@@ -221,3 +221,42 @@ describe('createTmdbMovieRepository', () => {
     expect(requests).toEqual([]);
   });
 });
+
+describe('regional lists', () => {
+  const page = { page: 1, total_pages: 1, results: [{ ...movieDto, backdrop_path: '/wide.jpg' }] };
+
+  it('reads what is in theatres in the region, with the wide image', async () => {
+    const { repository, requests } = setup({ status: 200, data: page });
+
+    const [movie] = await repository.listNowPlaying('PE');
+
+    expect(requests[0]?.url).toBe('/movie/now_playing');
+    expect(requests[0]?.params).toMatchObject({ region: 'PE' });
+    expect(movie?.backdrop?.large).toBe('https://image.tmdb.org/t/p/w1280/wide.jpg');
+  });
+
+  it('lists popular movies already released in theatres in the region', async () => {
+    const { repository, requests } = setup({ status: 200, data: page });
+
+    await repository.listPopular('PE');
+
+    expect(requests[0]?.params).toMatchObject({
+      region: 'PE',
+      with_release_type: '2|3',
+      sort_by: 'popularity.desc',
+      'release_date.lte': '2026-10-01',
+    });
+  });
+
+  it('lists upcoming movies from tomorrow on in the region', async () => {
+    const { repository, requests } = setup({ status: 200, data: page });
+
+    await repository.listUpcoming('PE');
+
+    expect(requests[0]?.params).toMatchObject({
+      region: 'PE',
+      with_release_type: '2|3',
+      'release_date.gte': '2026-10-02',
+    });
+  });
+});

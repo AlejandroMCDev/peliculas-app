@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { AppError } from '@/shared/lib/errors';
 import type { MoviePage } from '../domain/movie';
 import type { MovieFilters, MovieSort } from '../domain/movie-filters';
-import type { MovieRepository } from '../domain/movie-repository';
+import type { MovieRepository, Region } from '../domain/movie-repository';
 import {
   genreListDtoSchema,
   movieDetailDtoSchema,
@@ -11,7 +11,7 @@ import {
   pageDtoSchema,
   personDtoSchema,
 } from './tmdb-dtos';
-import { toMovie, toMovieDetail, toPerson } from './tmdb-mappers';
+import { toMovie, toMovieDetail, toMovieWithBackdrop, toPerson } from './tmdb-mappers';
 
 const SORT_PARAM: Record<MovieSort, string> = {
   popularity: 'popularity.desc',
@@ -46,7 +46,7 @@ export function toDiscoverParams(filters: MovieFilters, page: number, today: Dat
     'primary_release_date.lte': filters.yearTo
       ? `${filters.yearTo}-12-31`
       : filters.sort === 'release'
-        ? today.toISOString().slice(0, 10)
+        ? isoDate(today)
         : undefined,
     'vote_average.gte': filters.minRating > 0 ? filters.minRating : undefined,
     'vote_count.gte': usesRating ? MIN_VOTES_FOR_RATING : undefined,
@@ -54,6 +54,17 @@ export function toDiscoverParams(filters: MovieFilters, page: number, today: Dat
     'with_runtime.lte': filters.runtimeMax ?? undefined,
   };
 }
+
+/**
+ * With `region`, TMDB's `release_date.*` filters use that country's release dates.
+ * Release types 2|3 = theatrical (limited or wide): skips festivals and digital-only dates.
+ */
+function regionalParams(region: Region) {
+  return { region, with_release_type: '2|3', include_adult: false, page: 1 };
+}
+
+const isoDate = (date: Date) => date.toISOString().slice(0, 10);
+const addDays = (date: Date, days: number) => new Date(date.getTime() + days * 86_400_000);
 
 export function createTmdbMovieRepository(
   client: AxiosInstance,
@@ -106,6 +117,29 @@ export function createTmdbMovieRepository(
 
     async getPerson(id) {
       return toPerson(await get(personDtoSchema, `/person/${id}`));
+    },
+
+    async listNowPlaying(region) {
+      const dto = await get(moviePageDtoSchema, '/movie/now_playing', { region, page: 1 });
+      return dto.results.map(toMovieWithBackdrop);
+    },
+
+    async listPopular(region) {
+      const dto = await get(moviePageDtoSchema, '/discover/movie', {
+        ...regionalParams(region),
+        sort_by: 'popularity.desc',
+        'release_date.lte': isoDate(now()),
+      });
+      return dto.results.map(toMovie);
+    },
+
+    async listUpcoming(region) {
+      const dto = await get(moviePageDtoSchema, '/discover/movie', {
+        ...regionalParams(region),
+        sort_by: 'popularity.desc',
+        'release_date.gte': isoDate(addDays(now(), 1)),
+      });
+      return dto.results.map(toMovie);
     },
   };
 }

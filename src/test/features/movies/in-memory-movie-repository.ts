@@ -1,4 +1,4 @@
-import type { Movie, MoviePage, Person } from '@/features/movies/domain/movie';
+import type { Movie, MoviePage, MovieWithBackdrop, Person } from '@/features/movies/domain/movie';
 import type { MovieFilters } from '@/features/movies/domain/movie-filters';
 import type { MovieRepository } from '@/features/movies/domain/movie-repository';
 import { AppError } from '@/shared/lib/errors';
@@ -15,12 +15,23 @@ export function aMovie(overrides: Partial<Movie> = {}): Movie {
   };
 }
 
+type RegionalLists = {
+  nowPlaying: MovieWithBackdrop[];
+  popular: Movie[];
+  upcoming: Movie[];
+  discovered: Movie[];
+};
+
 /** Test double for the port: records the calls it gets and answers from fixed data. */
-export function createInMemoryMovieRepository(people: Person[] = []) {
+export function createInMemoryMovieRepository(
+  people: Person[] = [],
+  lists: Partial<RegionalLists> = {},
+) {
   const calls = {
     discover: [] as { filters: MovieFilters; page: number }[],
     search: [] as { query: string; page: number }[],
     searchPeople: [] as string[],
+    regional: [] as { list: 'nowPlaying' | 'popular' | 'upcoming'; region: string }[],
   };
   const page = (movies: Movie[], number: number): MoviePage => ({
     movies,
@@ -31,7 +42,7 @@ export function createInMemoryMovieRepository(people: Person[] = []) {
   const repository: MovieRepository = {
     async discoverMovies(filters, number) {
       calls.discover.push({ filters, page: number });
-      return page([aMovie({ id: 10, title: 'Discovered' })], number);
+      return page(lists.discovered ?? [aMovie({ id: 10, title: 'Discovered' })], number);
     },
     async searchMovies(query, number) {
       calls.search.push({ query, page: number });
@@ -55,6 +66,18 @@ export function createInMemoryMovieRepository(people: Person[] = []) {
       const person = people.find((item) => item.id === id);
       if (!person) throw new AppError('NOT_FOUND', `person ${id}`);
       return person;
+    },
+    async listNowPlaying(region) {
+      calls.regional.push({ list: 'nowPlaying', region });
+      return lists.nowPlaying ?? [];
+    },
+    async listPopular(region) {
+      calls.regional.push({ list: 'popular', region });
+      return lists.popular ?? [];
+    },
+    async listUpcoming(region) {
+      calls.regional.push({ list: 'upcoming', region });
+      return lists.upcoming ?? [];
     },
   };
 

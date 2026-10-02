@@ -11,10 +11,13 @@ import {
 import { useCallback, useMemo } from 'react';
 import { browseMovies } from '../application/browse-movies';
 import { getMovieDetail } from '../application/get-movie-detail';
+import { getFeaturedMovies } from '../application/get-featured-movies';
 import { getPerson } from '../application/get-person';
 import { listGenres } from '../application/list-genres';
+import { listMovieShelf, type ShelfSource } from '../application/list-movie-shelf';
 import { MIN_PEOPLE_QUERY_LENGTH, searchPeople } from '../application/search-people';
-import type { Movie, MovieDetail, MoviePage, Person } from '../domain/movie';
+import type { FeaturedMovie, Movie, MovieDetail, MoviePage, Person } from '../domain/movie';
+import type { Region } from '../domain/movie-repository';
 import { isSearchMode, type MovieFilters } from '../domain/movie-filters';
 import { movieRepository } from '../movies.composition';
 
@@ -28,6 +31,9 @@ export const movieKeys = {
   list: (filters: MovieFilters) => [...movieKeys.lists(), cacheKeyFor(filters)] as const,
   details: () => [...movieKeys.all, 'detail'] as const,
   detail: (id: number) => [...movieKeys.details(), id] as const,
+  featured: (region: Region) => [...movieKeys.all, 'featured', region] as const,
+  shelves: () => [...movieKeys.all, 'shelf'] as const,
+  shelf: (source: ShelfSource) => [...movieKeys.shelves(), source] as const,
   genres: () => ['genres'] as const,
   peopleSearch: (query: string) => ['people', 'search', query] as const,
   person: (id: number) => ['people', id] as const,
@@ -88,12 +94,39 @@ function findCachedMovie(queryClient: QueryClient, id: number): Movie | undefine
     const found = data?.pages.flatMap((page) => page.movies).find((movie) => movie.id === id);
     if (found) return found;
   }
+  const shelves = [
+    ...queryClient.getQueriesData<Movie[]>({ queryKey: movieKeys.shelves() }),
+    ...queryClient.getQueriesData<FeaturedMovie[]>({ queryKey: [...movieKeys.all, 'featured'] }),
+  ];
+  for (const [, data] of shelves) {
+    const found = data?.find((movie) => movie.id === id);
+    if (found) return found;
+  }
   const details = queryClient.getQueriesData<MovieDetail>({ queryKey: movieKeys.details() });
   for (const [, data] of details) {
     const found = data?.recommendations.find((movie) => movie.id === id);
     if (found) return found;
   }
   return undefined;
+}
+
+/** The home hero. Theatre listings change weekly: an hour of cache is plenty. */
+export function useFeaturedMovies(region: Region) {
+  return useQuery({
+    queryKey: movieKeys.featured(region),
+    queryFn: () => getFeaturedMovies(movieRepository, region),
+    staleTime: 60 * MINUTE,
+  });
+}
+
+/** One home section. `enabled` lets a section wait until it scrolls near the viewport. */
+export function useMovieShelf(source: ShelfSource, enabled: boolean) {
+  return useQuery({
+    queryKey: movieKeys.shelf(source),
+    queryFn: () => listMovieShelf(movieRepository, source),
+    staleTime: 60 * MINUTE,
+    enabled,
+  });
 }
 
 export function useGenres() {
